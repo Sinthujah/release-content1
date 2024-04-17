@@ -1,8 +1,13 @@
+# Exported from:        http://Sinthuja:5516/
+# Release version:      24.1.0-SNAPSHOT
+# Date created:         Wed Apr 17 16:04:27 IST 2024
+
 ---
 apiVersion: xl-release/v1
 kind: Import
 spec:
   imports:
+  - Permissions.yaml
   - Workflow_AWS Lambda application setup with Digital.ai Deploy.yaml
   - Workflow_Azure Application setup with Digital.ai Deploy to create Azure resource
     groups.yaml

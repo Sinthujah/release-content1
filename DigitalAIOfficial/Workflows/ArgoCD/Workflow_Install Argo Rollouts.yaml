@@ -1,3 +1,7 @@
+# Exported from:        http://Sinthuja:5516/
+# Release version:      24.1.0-SNAPSHOT
+# Date created:         Wed Apr 17 16:04:27 IST 2024
+
 ---
 apiVersion: xl-release/v1
 kind: Templates
@@ -12,6 +16,13 @@ spec:
   phases:
   - phase: Check if Argo Rollouts is already installed
     tasks:
+    - name: Specify RunAs user
+      type: xlrelease.UserInputTask
+      description: Specify the Run as user credentials which will be used to run the
+        workflow. All automated tasks will be run as this user.
+      variables:
+      - runAsUsername
+      - runAsUserPassword
     - name: Input for Argo Rollouts installation
       type: xlrelease.UserInputTask
       description: Input for Kubernetes API server URL and Kubernetes namespace where
@@ -85,8 +96,8 @@ spec:
         server: "${kubernetesApiServer}"
       capabilities:
       - remote
-      namespace: argo-rollouts
       yamlLocation: https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+      namespace: argo-rollouts
     - name: Check status of pods in argo-rollouts namespace
       type: kubernetes.CheckPodStatus
       description: Performs check if all Argo Rollouts services are running successfully.
@@ -163,7 +174,20 @@ spec:
     key: allServicesResponse
     requiresValue: false
     showOnReleaseStart: false
+  - type: xlrelease.StringVariable
+    key: runAsUsername
+    showOnReleaseStart: false
+    label: Run automated tasks as user
+    description: Run all automated tasks in this workflow as user
+  - type: xlrelease.PasswordStringVariable
+    key: runAsUserPassword
+    showOnReleaseStart: false
+    label: Password
+    description: Password for automated tasks user
   disableNotifications: true
+  scriptUsername: "${runAsUsername}"
+  variableMapping:
+    scriptUserPassword: "${runAsUserPassword}"
   author: Digital.ai
   logo:
     type: xlrelease.TemplateLogo

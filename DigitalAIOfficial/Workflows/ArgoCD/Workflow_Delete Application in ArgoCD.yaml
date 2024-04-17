@@ -1,3 +1,7 @@
+# Exported from:        http://Sinthuja:5516/
+# Release version:      24.1.0-SNAPSHOT
+# Date created:         Wed Apr 17 16:04:27 IST 2024
+
 ---
 apiVersion: xl-release/v1
 kind: Templates
@@ -11,29 +15,37 @@ spec:
   phases:
   - phase: Delete Application in ArgoCD
     tasks:
+    - name: Specify RunAs user
+      type: xlrelease.UserInputTask
+      description: Specify the Run as user credentials which will be used to run the
+        workflow. All automated tasks will be run as this user.
+      variables:
+      - runAsUsername
+      - runAsUserPassword
     - name: Application Details
       type: xlrelease.UserInputTask
       description: Please enter the required information below.
       variables:
       - projectDetails
       - argoCDApiServer
-      - applicationName
+      - Application_name
     - name: Delete Application in ArgoCD
       type: argocd.RemoveApplication
       variableMapping:
-        server: "${argoCDApiServer}"
+        argoServer: "${argoCDApiServer}"
       capabilities:
       - remote
-      applicationName: "${applicationName}"
+      applicationName: "${Application_name}"
     - name: Delete Application in Release
-      type: managedApplications.DeleteApplication
+      type: xlrelease.UserInputTask
+      description: Please enter the required information below.
     color: '#3d6c9e'
   kind: WORKFLOW
   categories:
   - Application onboarding
   variables:
   - type: xlrelease.StringVariable
-    key: applicationName
+    key: Application_name
     showOnReleaseStart: false
     label: Application Name
     description: Application name to delete from ArgoCD
@@ -50,13 +62,19 @@ spec:
     description: ArgoCD Api Server connection details
     referencedType: argocd.APIServer
   - type: xlrelease.StringVariable
-    key: managedApplicationId
-    requiresValue: false
+    key: runAsUsername
     showOnReleaseStart: false
-    label: Application ID
-    description: "Application ID in Digital.ai Release. For autocomplete, if folder\
-      \ is empty, release/workflow execution folder will be used"
+    label: Run automated tasks as user
+    description: Run all automated tasks in this workflow as user
+  - type: xlrelease.PasswordStringVariable
+    key: runAsUserPassword
+    showOnReleaseStart: false
+    label: Password
+    description: Password for automated tasks user
   disableNotifications: true
+  scriptUsername: "${runAsUsername}"
+  variableMapping:
+    scriptUserPassword: "${runAsUserPassword}"
   author: Digital.ai
   logo:
     type: xlrelease.TemplateLogo

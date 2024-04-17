@@ -1,3 +1,7 @@
+# Exported from:        http://Sinthuja:5516/
+# Release version:      24.1.0-SNAPSHOT
+# Date created:         Wed Apr 17 16:04:27 IST 2024
+
 ---
 apiVersion: xl-release/v1
 kind: Templates
@@ -13,6 +17,13 @@ spec:
   phases:
   - phase: Check if ArgoCD is already installed
     tasks:
+    - name: Specify RunAs user
+      type: xlrelease.UserInputTask
+      description: Specify the Run as user credentials which will be used to run the
+        workflow. All automated tasks will be run as this user.
+      variables:
+      - runAsUsername
+      - runAsUserPassword
     - name: Input for ArgoCD installation
       type: xlrelease.UserInputTask
       description: Input for Kubernetes API server URL and Kubernetes namespace where
@@ -86,8 +97,8 @@ spec:
         server: "${kubernetesApiServer}"
       capabilities:
       - remote
-      namespace: "${namespace}"
       yamlLocation: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+      namespace: "${namespace}"
     - name: Check status of pods in ArgoCD namespace
       type: kubernetes.CheckPodStatus
       description: Performs check if all ArgoCD services are running successfully.
@@ -185,9 +196,9 @@ spec:
     color: '#3d6c9e'
   kind: WORKFLOW
   categories:
+  - Infrastructure Service
   - Application onboarding
   - Application Life Cycle Management
-  - Infrastructure Service
   variables:
   - type: xlrelease.StringVariable
     key: namespace
@@ -233,7 +244,20 @@ spec:
     key: argoCDSecret
     requiresValue: false
     showOnReleaseStart: false
+  - type: xlrelease.StringVariable
+    key: runAsUsername
+    showOnReleaseStart: false
+    label: Run automated tasks as user
+    description: Run all automated tasks in this workflow as user
+  - type: xlrelease.PasswordStringVariable
+    key: runAsUserPassword
+    showOnReleaseStart: false
+    label: Password
+    description: Password for automated tasks user
   disableNotifications: true
+  scriptUsername: "${runAsUsername}"
+  variableMapping:
+    scriptUserPassword: "${runAsUserPassword}"
   author: Digital.ai
   logo:
     type: xlrelease.TemplateLogo

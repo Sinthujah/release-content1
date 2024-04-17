@@ -1,3 +1,7 @@
+# Exported from:        http://Sinthuja:5516/
+# Release version:      24.1.0-SNAPSHOT
+# Date created:         Wed Apr 17 16:04:27 IST 2024
+
 ---
 apiVersion: xl-release/v1
 kind: Permissions
@@ -7,12 +11,12 @@ metadata:
 spec:
 - directory: "."
   teams:
+  - name: Folder Owner
   - name: Release Admin
     permissions:
     - release#edit_failure_handler
     - release#edit_precondition
     - release#lock_task
-  - name: Folder Owner
   - name: Template Owner
     permissions:
     - template#edit_failure_handler

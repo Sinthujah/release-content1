@@ -1,3 +1,7 @@
+# Exported from:        http://Sinthuja:5516/
+# Release version:      24.1.0-SNAPSHOT
+# Date created:         Wed Apr 17 16:04:27 IST 2024
+
 ---
 apiVersion: xl-release/v1
 kind: Permissions
@@ -8,6 +12,11 @@ spec:
 - directory: "."
   teams:
   - name: Folder Owner
+  - name: Release Admin
+    permissions:
+    - release#edit_failure_handler
+    - release#edit_precondition
+    - release#lock_task
   - name: Workflow Admin
     roles:
     - Authenticated Users
@@ -19,8 +28,3 @@ spec:
     - template#edit_failure_handler
     - template#edit_precondition
     - template#lock_task
-  - name: Release Admin
-    permissions:
-    - release#edit_failure_handler
-    - release#edit_precondition
-    - release#lock_task
