@@ -14,7 +14,7 @@ spec:
   phases:
   - phase: New Phase
     tasks:
-    - name: task21
+    - name: task3
       type: xlrelease.Task
   riskProfile: Default risk profile
   author: admin
